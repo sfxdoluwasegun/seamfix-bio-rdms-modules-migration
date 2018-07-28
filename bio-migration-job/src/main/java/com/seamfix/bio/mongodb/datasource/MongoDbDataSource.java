@@ -78,10 +78,11 @@ public class MongoDbDataSource extends Loggable {
     private String authSource;
     @Value("${mongo-authmechanism}")
     private String authMechanism;
-    private String sslValue = "ssl=" + useSsl;
-    private String replicaSetValue = "replicaSet=" + replicaSet;
-    private String authMechanismValue = "authMechanism=" + authMechanism;
-    private String authSourceValue = "authSource=" + authSource;
+
+    private String sslValue = "";
+    private String replicaSetValue = "";
+    private String authMechanismValue = "";
+    private String authSourceValue = "";
 
     @Autowired
     CryptManager cryptManager;
@@ -89,8 +90,12 @@ public class MongoDbDataSource extends Loggable {
     @PostConstruct
     public void init() {
         try {
+            sslValue = "ssl=" + useSsl;
+            replicaSetValue = "replicaSet=" + replicaSet;
+            authMechanismValue = "authMechanism=" + authMechanism;
+            authSourceValue = "authSource=" + authSource;
             mongoClient = getAppMogoDbClient();
-             log.info("Sucessful connection :");
+            log.info("Sucessful connection :");
         } catch (UnsupportedEncodingException e) {
             log.error("Error :" + e);
         }
