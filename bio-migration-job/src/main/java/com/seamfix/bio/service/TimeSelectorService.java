@@ -5,20 +5,9 @@
  */
 package com.seamfix.bio.service;
 
-import com.seamfix.bio.entities.AppUser;
-import com.seamfix.bio.entities.Employee;
-import com.seamfix.bio.entities.EmployeeAttendanceLog;
-import com.seamfix.bio.entities.Location;
-import com.seamfix.bio.entities.Project;
-import com.seamfix.bio.entities.TransactionRefLog;
-import com.seamfix.bio.entities.UserInvitation;
-import com.seamfix.bio.jpa.dao.EmployeeAttendanceRepository;
-import com.seamfix.bio.jpa.dao.EmployeeRepository;
-import com.seamfix.bio.jpa.dao.LocationRepository;
-import com.seamfix.bio.jpa.dao.ProjectRepository;
-import com.seamfix.bio.jpa.dao.TransactionRefLogRepository;
-import com.seamfix.bio.jpa.dao.UserInvitationRepository;
-import com.seamfix.bio.jpa.dao.UserRepository;
+import com.seamfix.bio.entities.*;
+import com.seamfix.bio.jpa.dao.*;
+import com.sf.biocloud.entity.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,6 +21,7 @@ public class TimeSelectorService {
 
     @Value("${cron.expression}")
     private String cronExpression;
+
 
     @Autowired
     ProjectRepository projectRepository;
@@ -53,6 +43,12 @@ public class TimeSelectorService {
 
     @Autowired
     TransactionRefLogRepository tranRefRepository;
+
+    @Autowired
+    private CustomerSubscriptionRepository customerSubscriptionRepository;
+
+    @Autowired
+    private CustomerSubscriptionPaymentHistoryRespository customerSubscriptionPaymentHistoryRespository;
 
     public String getCronTabExpression() {
         String exp = cronExpression;
@@ -90,6 +86,24 @@ public class TimeSelectorService {
         }
         return time;
 
+    }
+
+    public Long getSubscriptionLastTime() {
+        Long time = new Long(0);
+        CustomerSubscription customerSubscription = customerSubscriptionRepository.findTopByOrderByCreateDateDesc();
+        if (customerSubscription != null && customerSubscription.getCreateDate() != null) {
+            time = customerSubscription.getCreateDate().getTime();
+        }
+        return time;
+    }
+
+    public Long getSubscriptionPaymentHistoryLastTime() {
+        Long time = new Long(0);
+        CustomerSubscriptionPaymentHistory paymentHistory = customerSubscriptionPaymentHistoryRespository.findTopByOrderByCreateDateDesc();
+        if (paymentHistory != null && paymentHistory.getCreateDate() != null) {
+            time = paymentHistory.getCreateDate().getTime();
+        }
+        return time;
     }
 
     public Long getUserInviteLastTime() {

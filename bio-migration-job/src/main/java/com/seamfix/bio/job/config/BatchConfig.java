@@ -1,51 +1,19 @@
 package com.seamfix.bio.job.config;
 
-import com.seamfix.bio.entities.BioRegistraUserRole;
-import com.seamfix.bio.entities.CountryObj;
-import com.seamfix.bio.entities.Employee;
-import com.seamfix.bio.entities.EmployeeAttendanceLog;
-import com.seamfix.bio.entities.IclockerUserExt;
-import com.seamfix.bio.entities.IclockerUserRole;
-import com.seamfix.bio.entities.Organisation;
-import com.seamfix.bio.entities.UserInvitation;
+import com.seamfix.bio.entities.*;
 import com.seamfix.bio.job.events.ContraintViolationExceptionProcessorSkipper;
 import com.seamfix.bio.job.events.DataIntegrityViolationExceptionSkipper;
+import com.seamfix.bio.job.processors.*;
+import com.seamfix.bio.jpa.dao.*;
+import com.sf.biocloud.entity.*;
+import com.sf.biocloud.entity.Location;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import com.seamfix.bio.job.events.Listener;
 import com.seamfix.bio.job.events.NullPointerExceptionProcessorSkipper;
-import com.seamfix.bio.job.processors.CountryProcessor;
-import com.seamfix.bio.job.processors.OrgProcessor;
-import com.seamfix.bio.job.processors.OrgTypeProcessor;
-import com.seamfix.bio.job.processors.ProjectProcessor;
-import com.seamfix.bio.jpa.dao.CountryRepository;
-import com.seamfix.bio.jpa.dao.OrgTypeRepository;
-import com.seamfix.bio.jpa.dao.OrganisationRepository;
-import com.seamfix.bio.jpa.dao.ProjectRepository;
-import com.seamfix.bio.jpa.dao.StateRepository;
 import com.sf.bioregistra.entity.Country;
 import com.sf.bioregistra.entity.OrgType;
 import com.seamfix.bio.extended.mongodb.entities.Organization;
 import com.seamfix.bio.extended.mongodb.entities.TransactionRefLog;
-import com.seamfix.bio.job.processors.BioRegistraUserRoleProcessor;
-import com.seamfix.bio.job.processors.BioUserProcessor;
-import com.seamfix.bio.job.processors.EmployeeAttendanceLogProcessor;
-import com.seamfix.bio.job.processors.EmployeeProcessor;
-import com.seamfix.bio.job.processors.IclockerUserExtProcessor;
-import com.seamfix.bio.job.processors.IclockerUserRoleProcessor;
-import com.seamfix.bio.job.processors.LocationProcessor;
-import com.seamfix.bio.job.processors.TranRefLogProcessor;
-import com.seamfix.bio.job.processors.UserInviteProcessor;
-import com.seamfix.bio.job.processors.UserPhotoProcessor;
-import com.seamfix.bio.jpa.dao.BioRegistraUserRoleRepository;
-import com.seamfix.bio.jpa.dao.EmployeeAttendanceRepository;
-import com.seamfix.bio.jpa.dao.EmployeeRepository;
-import com.seamfix.bio.jpa.dao.IclockerUserRoleRepository;
-import com.seamfix.bio.jpa.dao.LocationRepository;
-import com.seamfix.bio.jpa.dao.TransactionRefLogRepository;
-import com.seamfix.bio.jpa.dao.UserInvitationRepository;
-import com.seamfix.bio.jpa.dao.UserPhotoRepository;
-import com.seamfix.bio.jpa.dao.UserRepository;
-import com.sf.biocloud.entity.Location;
 import com.sf.bioregistra.entity.BioUser;
 import com.sf.bioregistra.entity.Project;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -69,9 +37,6 @@ import org.springframework.data.repository.core.support.DefaultCrudMethods;
 import org.springframework.data.repository.core.support.DefaultRepositoryMetadata;
 import com.seamfix.bio.mongodb.dao.IclockerUserExtMongoRepository;
 import com.seamfix.bio.service.TimeSelectorService;
-import com.sf.biocloud.entity.AttendanceLog;
-import com.sf.biocloud.entity.Attendee;
-import com.sf.biocloud.entity.BioCloudUserInvite;
 import org.springframework.data.mongodb.core.query.Query;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -102,6 +67,9 @@ public class BatchConfig {
     ProjectRepository projectRepository;
 
     @Autowired
+    CustomerSubscriptionRepository customerSubscriptionRepository;
+
+    @Autowired
     CountryRepository countryRepository;
 
     @Autowired
@@ -121,6 +89,7 @@ public class BatchConfig {
 
     @Autowired
     com.seamfix.bio.jpa.dao.IclockerUserExtRepository iclockerUserExtRepository;
+
     @Autowired
     IclockerUserRoleRepository iclockerUserRoleRepository;
     @Autowired
@@ -136,6 +105,9 @@ public class BatchConfig {
 
     @Autowired
     TransactionRefLogRepository transactionRefLogRepository;
+
+    @Autowired
+    CustomerSubscriptionPaymentHistoryRespository customerSubscriptionPaymentHistoryRespository;
 
     @Autowired
     TimeSelectorService selector;
@@ -160,7 +132,7 @@ public class BatchConfig {
         return jobBuilderFactory.get("job").incrementer(new RunIdIncrementer()).listener(new Listener())
                 .flow(orgTypeStep()).next(orgStep()).next(projectStep())./**/
                 next(countryStateStep()).next(locationStep()).next(userStep()).
-                next(userPhotoStep()).next(iclockerUserExtStep()).next(iclockerUserRoleStep()).next(bioregistraUserRoleStep()).next(userInvitationStep()).next(employeeStep()).next(attendanceLogStep()).next(tranRefLogStep()).end().build();
+                next(userPhotoStep()).next(iclockerUserExtStep()).next(iclockerUserRoleStep()).next(bioregistraUserRoleStep()).next(userInvitationStep()).next(employeeStep()).next(attendanceLogStep()).next(tranRefLogStep()).next(subscriptionStep()).next(subscriptionPaymentHistoryStep()).end().build();
 
     }
 
@@ -499,6 +471,50 @@ public class BatchConfig {
         });
         reader.setTargetType(TransactionRefLog.class);
         reader.setQuery(new Query(where("created").gt(selector.getTranRefLogLastTime())));
+        return reader;
+    }
+
+    @Bean
+    @Qualifier(value = "subscriptionStep")
+    public Step subscriptionStep() {
+        return stepBuilderFactory.get("subscriptionStep").<Subscription, CustomerSubscription>chunk(5)
+                .reader(subscriptionReader()).processor(new CustomerSubscriptionProcessor(customerSubscriptionRepository)).faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper()).build();
+    }
+
+    @Bean
+    public MongoItemReader<Subscription> subscriptionReader() {
+        MongoItemReader<Subscription> reader = new MongoItemReader<>();
+        reader.setTemplate(mongoTemplate);
+        reader.setCollection("subscription");
+        reader.setSort(new HashMap<String, Sort.Direction>() {
+            {
+                put("_id", Direction.DESC);
+            }
+        });
+        reader.setTargetType(Subscription.class);
+        reader.setQuery(new Query(where("created").gt(selector.getSubscriptionLastTime())));
+        return reader;
+    }
+
+    @Bean
+    @Qualifier(value = "subscriptionPaymentHistoryStep")
+    public Step subscriptionPaymentHistoryStep() {
+        return stepBuilderFactory.get("subscriptionPaymentHistoryStep").<SubscriptionPaymentHistory, CustomerSubscriptionPaymentHistory>chunk(5)
+                .reader(subscriptionPaymentReader()).processor(new CustomerSubscriptionPaymentHistoryProcessor(customerSubscriptionPaymentHistoryRespository)).faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper()).build();
+    }
+
+    @Bean
+    public MongoItemReader<SubscriptionPaymentHistory> subscriptionPaymentReader() {
+        MongoItemReader<SubscriptionPaymentHistory> reader = new MongoItemReader<>();
+        reader.setTemplate(mongoTemplate);
+        reader.setCollection("subscription_payment_history");
+        reader.setSort(new HashMap<String, Sort.Direction>() {
+            {
+                put("_id", Direction.DESC);
+            }
+        });
+        reader.setTargetType(SubscriptionPaymentHistory.class);
+        reader.setQuery(new Query(where("created").gt(selector.getSubscriptionPaymentHistoryLastTime())));
         return reader;
     }
 
