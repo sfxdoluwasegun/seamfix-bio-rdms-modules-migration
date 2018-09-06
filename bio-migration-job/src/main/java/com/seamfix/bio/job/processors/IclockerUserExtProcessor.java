@@ -5,20 +5,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import com.seamfix.bio.entities.IclockerUserExt;
-import com.seamfix.bio.jpa.dao.UserRepository;
+import com.seamfix.bio.job.jpa.dao.UserRepository;
 import com.seamfix.bio.extended.mongodb.entities.BioCloudUserExt;
 import com.sf.bioregistra.entity.BioUser;
 import java.util.Date;
-import com.seamfix.bio.mongodb.dao.IclockerUserExtMongoRepository;
+import com.seamfix.bio.job.mongodb.dao.IclockerUserExtMongoRepository;
 
 public class IclockerUserExtProcessor implements ItemProcessor<BioUser, IclockerUserExt> {
 
     private static final Logger log = LoggerFactory.getLogger(IclockerUserExtProcessor.class);
     private final UserRepository userRepository;
     private final IclockerUserExtMongoRepository mongodbIclockerUserExtRepository;
-    private final com.seamfix.bio.jpa.dao.IclockerUserExtRepository iclockerUserExtRepository;
+    private final com.seamfix.bio.job.jpa.dao.IclockerUserExtRepository iclockerUserExtRepository;
 
-    public IclockerUserExtProcessor(UserRepository userRepository, IclockerUserExtMongoRepository mongodbIclockerUserExtRepository, com.seamfix.bio.jpa.dao.IclockerUserExtRepository iclockerUserExtRepository) {
+    public IclockerUserExtProcessor(UserRepository userRepository, IclockerUserExtMongoRepository mongodbIclockerUserExtRepository, com.seamfix.bio.job.jpa.dao.IclockerUserExtRepository iclockerUserExtRepository) {
         this.userRepository = userRepository;
         this.mongodbIclockerUserExtRepository = mongodbIclockerUserExtRepository;
         this.iclockerUserExtRepository = iclockerUserExtRepository;

@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import com.seamfix.bio.entities.UserInvitation;
-import com.seamfix.bio.jpa.dao.LocationRepository;
-import com.seamfix.bio.jpa.dao.OrganisationRepository;
-import com.seamfix.bio.jpa.dao.UserInvitationRepository;
+import com.seamfix.bio.job.jpa.dao.LocationRepository;
+import com.seamfix.bio.job.jpa.dao.OrganisationRepository;
+import com.seamfix.bio.job.jpa.dao.UserInvitationRepository;
 import com.sf.biocloud.entity.BioCloudUserInvite;
 import java.util.Date;
 

@@ -6,9 +6,9 @@ import com.seamfix.bio.entities.Organisation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
-import com.seamfix.bio.jpa.dao.EmployeeRepository;
-import com.seamfix.bio.jpa.dao.LocationRepository;
-import com.seamfix.bio.jpa.dao.OrganisationRepository;
+import com.seamfix.bio.job.jpa.dao.EmployeeRepository;
+import com.seamfix.bio.job.jpa.dao.LocationRepository;
+import com.seamfix.bio.job.jpa.dao.OrganisationRepository;
 import com.sf.biocloud.entity.Attendee;
 import java.util.Date;
 
