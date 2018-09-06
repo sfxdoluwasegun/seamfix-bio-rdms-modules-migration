@@ -12,15 +12,19 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cacheable
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Table(name = "SUBSCRIPTION_PAYMENT_HISTORY", indexes = {
-        @Index(name = "subPaymentHistoryIdx", columnList = "orgId,reference")
+@Table(name = "SUBSCRIPTION_PAYMENT_HISTORY",
+        uniqueConstraints={
+                @UniqueConstraint(columnNames = {"org_id", "reference"})
+        },
+        indexes = {
+        @Index(name = "subPaymentHistoryIdx", columnList = "org_id,reference")
 })
 public class CustomerSubscriptionPaymentHistory extends BaseEntity {
 
-    @Column(unique = true)
+    @Column()
     private String reference;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "org_id")
     private String orgId;
 
     @Column(name = "billing_cycle")
