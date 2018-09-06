@@ -1,0 +1,20 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.seamfix.bio.job.jpa.dao;
+
+import com.seamfix.bio.entities.TransactionRefLog;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author Uchechukwu Onuoha
+ */
+@Repository
+public interface TransactionRefLogRepository extends JpaRepository<TransactionRefLog, Long> {
+
+    public TransactionRefLog findTopByOrderByCreateDateDesc();
+}

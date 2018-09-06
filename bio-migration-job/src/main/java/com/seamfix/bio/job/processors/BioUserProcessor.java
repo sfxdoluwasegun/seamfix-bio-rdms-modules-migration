@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import com.seamfix.bio.entities.AppUser;
-import com.seamfix.bio.jpa.dao.UserRepository;
+import com.seamfix.bio.job.jpa.dao.UserRepository;
 import com.sf.bioregistra.entity.BioUser;
 import java.util.Date;
 

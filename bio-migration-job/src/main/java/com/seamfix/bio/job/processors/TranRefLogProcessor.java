@@ -4,7 +4,7 @@ import com.seamfix.bio.extended.mongodb.entities.TransactionRefLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
-import com.seamfix.bio.jpa.dao.TransactionRefLogRepository;
+import com.seamfix.bio.job.jpa.dao.TransactionRefLogRepository;
 
 public class TranRefLogProcessor implements ItemProcessor<TransactionRefLog, com.seamfix.bio.entities.TransactionRefLog> {
 

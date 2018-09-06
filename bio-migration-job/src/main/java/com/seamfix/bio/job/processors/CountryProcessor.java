@@ -2,8 +2,8 @@ package com.seamfix.bio.job.processors;
 
 import com.seamfix.bio.entities.CountryObj;
 import com.seamfix.bio.entities.CountryStateObj;
-import com.seamfix.bio.jpa.dao.CountryRepository;
-import com.seamfix.bio.jpa.dao.StateRepository;
+import com.seamfix.bio.job.jpa.dao.CountryRepository;
+import com.seamfix.bio.job.jpa.dao.StateRepository;
 import com.sf.bioregistra.entity.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

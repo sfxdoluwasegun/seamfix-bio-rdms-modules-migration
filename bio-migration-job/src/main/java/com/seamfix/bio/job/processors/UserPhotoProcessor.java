@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import com.seamfix.bio.entities.AppUser;
 import com.seamfix.bio.entities.UserPhoto;
-import com.seamfix.bio.jpa.dao.UserPhotoRepository;
-import com.seamfix.bio.jpa.dao.UserRepository;
+import com.seamfix.bio.job.jpa.dao.UserPhotoRepository;
+import com.seamfix.bio.job.jpa.dao.UserRepository;
 import com.sf.bioregistra.entity.BioUser;
 
 public class UserPhotoProcessor implements ItemProcessor<BioUser, UserPhoto> {

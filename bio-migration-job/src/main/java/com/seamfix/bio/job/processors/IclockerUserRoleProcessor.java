@@ -8,12 +8,12 @@ import com.seamfix.bio.entities.IclockerUserRole;
 import com.seamfix.bio.entities.Location;
 import com.seamfix.bio.entities.Organisation;
 import com.seamfix.bio.extended.mongodb.entities.BioCloudUserExt;
-import com.seamfix.bio.jpa.dao.IclockerUserRoleRepository;
-import com.seamfix.bio.jpa.dao.LocationRepository;
-import com.seamfix.bio.jpa.dao.OrganisationRepository;
-import com.seamfix.bio.jpa.dao.UserRepository;
+import com.seamfix.bio.job.jpa.dao.IclockerUserRoleRepository;
+import com.seamfix.bio.job.jpa.dao.LocationRepository;
+import com.seamfix.bio.job.jpa.dao.OrganisationRepository;
+import com.seamfix.bio.job.jpa.dao.UserRepository;
 import com.sf.bioregistra.entity.BioUser;
-import com.seamfix.bio.mongodb.dao.IclockerUserExtMongoRepository;
+import com.seamfix.bio.job.mongodb.dao.IclockerUserExtMongoRepository;
 import com.sf.biocloud.entity.LocationRole;
 import com.sf.biocloud.entity.enums.BioCloudUserRole;
 import com.sf.bioregistra.entity.OrgRole;
@@ -66,6 +66,8 @@ public class IclockerUserRoleProcessor implements ItemProcessor<BioUser, Iclocke
                     }
 
                 }
+
+            } else  {
 
             }
 

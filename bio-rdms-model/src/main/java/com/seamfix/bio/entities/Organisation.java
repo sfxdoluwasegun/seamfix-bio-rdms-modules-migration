@@ -46,6 +46,12 @@ public class Organisation extends BaseEntity {
     @JoinColumn(nullable = true, name = "org_type")
     private OrgType orgType;
 
+    @Column(name="min_employees")
+    private long minEmployeeSize;
+
+    @Column(name="max_employees")
+    private long maxEmployeeSize;
+
     private String walletId;
     @Enumerated(EnumType.STRING)
     private ProductName productName;

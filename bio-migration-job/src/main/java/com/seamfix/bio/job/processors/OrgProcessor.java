@@ -2,11 +2,12 @@ package com.seamfix.bio.job.processors;
 
 import com.seamfix.bio.entities.OrgType;
 import com.seamfix.bio.entities.Organisation;
-import com.seamfix.bio.jpa.dao.OrgTypeRepository;
+import com.seamfix.bio.job.jpa.dao.OrgTypeRepository;
+import com.seamfix.bio.proxy.Organization;
+import com.sf.bioregistra.entity.EmployeeRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
-import com.seamfix.bio.extended.mongodb.entities.Organization;
 import java.util.Date;
 
 public class OrgProcessor implements ItemProcessor<Organization, Organisation> {
@@ -46,6 +47,11 @@ public class OrgProcessor implements ItemProcessor<Organization, Organisation> {
             converted.setCreateDate(new Date(org.getCreated()));
         }
 
+        EmployeeRange employeeRange = org.getEmployeeRange();
+        if (employeeRange != null) {
+            converted.setMinEmployeeSize(employeeRange.getLowerLimit());
+            converted.setMaxEmployeeSize(employeeRange.getUpperLimit());
+        }
         return converted;
     }
 

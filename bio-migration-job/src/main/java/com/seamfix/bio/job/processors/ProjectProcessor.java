@@ -1,7 +1,7 @@
 package com.seamfix.bio.job.processors;
 
 import com.seamfix.bio.entities.Organisation;
-import com.seamfix.bio.jpa.dao.OrganisationRepository;
+import com.seamfix.bio.job.jpa.dao.OrganisationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
