@@ -1,59 +1,44 @@
 package com.seamfix.bio.job.config;
 
-import com.seamfix.bio.job.jpa.dao.CustomerSubscriptionPaymentHistoryRespository;
-import com.seamfix.bio.job.jpa.dao.UserInvitationRepository;
-import com.seamfix.bio.job.jpa.dao.LocationRepository;
-import com.seamfix.bio.job.jpa.dao.OrgTypeRepository;
-import com.seamfix.bio.job.jpa.dao.CountryRepository;
-import com.seamfix.bio.job.jpa.dao.UserRepository;
-import com.seamfix.bio.job.jpa.dao.EmployeeAttendanceRepository;
-import com.seamfix.bio.job.jpa.dao.EmployeeRepository;
-import com.seamfix.bio.job.jpa.dao.BioRegistraUserRoleRepository;
-import com.seamfix.bio.job.jpa.dao.OrganisationRepository;
-import com.seamfix.bio.job.jpa.dao.ProjectRepository;
-import com.seamfix.bio.job.jpa.dao.CustomerSubscriptionRepository;
-import com.seamfix.bio.job.jpa.dao.IclockerUserRoleRepository;
-import com.seamfix.bio.job.jpa.dao.UserPhotoRepository;
-import com.seamfix.bio.job.jpa.dao.TransactionRefLogRepository;
-import com.seamfix.bio.job.jpa.dao.StateRepository;
+import org.slf4j.Logger;
+import java.util.HashMap;
+import org.slf4j.LoggerFactory;
+import com.sf.biocloud.entity.*;
 import com.seamfix.bio.entities.*;
 import com.seamfix.bio.job.events.*;
-import com.seamfix.bio.job.processors.*;
-import com.seamfix.bio.proxy.Organization;
-import com.sf.biocloud.entity.*;
+import com.seamfix.bio.job.jpa.dao.*;
 import com.sf.biocloud.entity.Location;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import com.seamfix.bio.job.processors.*;
 import com.sf.bioregistra.entity.Country;
 import com.sf.bioregistra.entity.OrgType;
-import com.seamfix.bio.extended.mongodb.entities.TransactionRefLog;
 import com.sf.bioregistra.entity.BioUser;
 import com.sf.bioregistra.entity.Project;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import java.util.HashMap;
 import org.springframework.batch.core.Job;
+import com.seamfix.bio.proxy.Organization;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.step.skip.SkipPolicy;
+import org.springframework.data.domain.Sort;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Sort.Direction;
+import com.seamfix.bio.job.service.TimeSelectorService;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.batch.item.data.MongoItemReader;
-import org.springframework.batch.item.data.RepositoryItemWriter;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.batch.core.step.skip.SkipPolicy;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.repository.core.RepositoryMetadata;
-import org.springframework.data.repository.core.support.DefaultCrudMethods;
-import org.springframework.data.repository.core.support.DefaultRepositoryMetadata;
-import com.seamfix.bio.job.mongodb.dao.IclockerUserExtMongoRepository;
-import com.seamfix.bio.job.service.TimeSelectorService;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.batch.item.data.RepositoryItemWriter;
+import org.springframework.data.repository.core.RepositoryMetadata;
+import com.seamfix.bio.extended.mongodb.entities.TransactionRefLog;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import com.seamfix.bio.job.mongodb.dao.IclockerUserExtMongoRepository;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.data.repository.core.support.DefaultCrudMethods;
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.data.repository.core.support.DefaultRepositoryMetadata;
 
 /**
  *
@@ -93,6 +78,9 @@ public class BatchConfig {
 
     @Autowired
     LocationRepository locationRepository;
+
+    @Autowired
+    IclockerSubscriptionPlanRepository subscriptionPlanRepository;
 
     @Autowired
     UserPhotoRepository userPhotoRepository;
@@ -150,7 +138,7 @@ public class BatchConfig {
         return jobBuilderFactory.get("job").incrementer(new RunIdIncrementer()).listener(new MigrationListener())
                 .flow(orgTypeStep()).next(orgStep()).next(projectStep())./**/
                 next(countryStateStep()).next(locationStep()).next(userStep()).
-                next(userPhotoStep()).next(iclockerUserExtStep()).next(iclockerUserRoleStep()).next(bioregistraUserRoleStep()).next(userInvitationStep()).next(employeeStep()).next(attendanceLogStep()).next(tranRefLogStep()).next(subscriptionStep()).next(subscriptionPaymentHistoryStep()).end().build();
+                next(userPhotoStep()).next(iclockerUserExtStep()).next(iclockerUserRoleStep()).next(bioregistraUserRoleStep()).next(userInvitationStep()).next(employeeStep()).next(attendanceLogStep()).next(tranRefLogStep()).next(subscriptionStep()).next(subscriptionPaymentHistoryStep()).next(subscriptionPlanStep()).end().build();
 
     }
 
@@ -532,7 +520,7 @@ public class BatchConfig {
             }
         });
         reader.setTargetType(Subscription.class);
-        reader.setQuery(new Query(where("created").gt(selector.getSubscriptionLastTime())));
+        reader.setQuery("{}");
         return reader;
     }
 
@@ -557,7 +545,38 @@ public class BatchConfig {
             }
         });
         reader.setTargetType(SubscriptionPaymentHistory.class);
-        reader.setQuery(new Query(where("created").gt(selector.getSubscriptionPaymentHistoryLastTime())));
+        reader.setQuery(new Query(where("created")
+                .gt(selector.getSubscriptionPaymentHistoryLastTime())
+                .and("reference").exists(true)));
+        return reader;
+    }
+
+    @Bean
+    @Qualifier(value = "subscriptionPlanStep")
+    public Step subscriptionPlanStep() {
+        return stepBuilderFactory.get("subscriptionPlanStep")
+                .allowStartIfComplete(true)
+                .<SubscriptionPlan, IclockerSubscriptionPlan>chunk(5)
+                .reader(subscriptionPlanReader())
+                .processor(new IclockerSubscriptionPlanProcessor(subscriptionPlanRepository))
+                .faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).faultTolerant()
+                .skipPolicy(dataIntegrityViolationExceptionSkipper())
+                .build();
+    }
+
+    @Bean
+    @StepScope
+    public MongoItemReader<SubscriptionPlan> subscriptionPlanReader() {
+        MongoItemReader<SubscriptionPlan> reader = new MongoItemReader<>();
+        reader.setTemplate(mongoTemplate);
+        reader.setCollection("subscription_plan");
+        reader.setSort(new HashMap<String, Sort.Direction>() {
+            {
+                put("_id", Direction.DESC);
+            }
+        });
+        reader.setTargetType(SubscriptionPlan.class);
+        reader.setQuery(new Query(where("discount").ne(null)));
         return reader;
     }
 

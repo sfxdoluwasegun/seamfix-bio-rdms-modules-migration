@@ -13,7 +13,7 @@ import static com.seamfix.bio.job.util.StringUtil.isNullOrEmpty;
 
 public class CustomerSubscriptionPaymentHistoryProcessor implements ItemProcessor<SubscriptionPaymentHistory, CustomerSubscriptionPaymentHistory> {
 
-    private static final Logger log = LoggerFactory.getLogger(CustomerSubscriptionPaymentHistoryProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(CustomerSubscriptionPaymentHistoryProcessor.class);
     private CustomerSubscriptionPaymentHistoryRespository repository;
 
     public CustomerSubscriptionPaymentHistoryProcessor(CustomerSubscriptionPaymentHistoryRespository repository) {
@@ -22,6 +22,7 @@ public class CustomerSubscriptionPaymentHistoryProcessor implements ItemProcesso
 
     @Override
     public CustomerSubscriptionPaymentHistory process(SubscriptionPaymentHistory subscriptionPaymentHistory) throws Exception {
+        logger.info("Subscription Payment History Migration in Progress...");
         CustomerSubscriptionPaymentHistory converted = new CustomerSubscriptionPaymentHistory();
         converted.setActive(subscriptionPaymentHistory.isActive());
         converted.setReference(isNullOrEmpty(subscriptionPaymentHistory.getReference()) ? "" : subscriptionPaymentHistory.getReference());
