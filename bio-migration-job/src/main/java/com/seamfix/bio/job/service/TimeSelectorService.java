@@ -52,6 +52,9 @@ public class TimeSelectorService {
     @Autowired
     private CustomerSubscriptionPaymentHistoryRespository customerSubscriptionPaymentHistoryRespository;
 
+    @Autowired
+    com.seamfix.bio.job.jpa.dao.IclockerUserExtRepository iclockerUserExtRepository;
+
     public Long getProjectLastTime() {
         Long time = new Long(0);
         Project proj = projectRepository.findTopByOrderByCreateDateDesc();
@@ -75,6 +78,16 @@ public class TimeSelectorService {
     public Long getUserLastTime() {
         Long time = new Long(0);
         AppUser user = userRepository.findTopByOrderByCreateDateDesc();
+        if (user != null && user.getCreateDate() != null) {
+            time = user.getCreateDate().getTime();
+        }
+        return time;
+
+    }
+
+    public Long getUserExtLastTime() {
+        Long time = new Long(0);
+        IclockerUserExt user = iclockerUserExtRepository.findTopByOrderByCreateDateDesc();
         if (user != null && user.getCreateDate() != null) {
             time = user.getCreateDate().getTime();
         }
