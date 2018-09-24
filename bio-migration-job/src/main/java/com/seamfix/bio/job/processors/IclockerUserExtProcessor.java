@@ -34,6 +34,9 @@ public class IclockerUserExtProcessor implements ItemProcessor<BioUser, Iclocker
             if (userExt != null) {
                 converted.setUserId(user.getUserId());
                 converted.setEnrolled(userExt.isEnrolled());
+                if (userExt.getEnrollTime() != null) {
+                    converted.setEnrolledTime(new Date(userExt.getEnrollTime()));
+                }
                 converted.setUserServiceProviderId(userExt.getSmileId() == null || !userExt.getSmileId().trim().isEmpty() ? "" : userExt.getSmileId());
                 if (dbUser != null) {
                     converted.setUid(dbUser);

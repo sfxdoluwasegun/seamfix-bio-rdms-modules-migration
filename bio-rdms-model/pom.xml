@@ -38,7 +38,7 @@
         <dependency>
             <groupId>com.sf.biocloud</groupId>
             <artifactId>bc-model</artifactId>
-            <version>1.5.0-FINAL</version>
+            <version>1.7.0-FINAL</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.sf.bioregistra</groupId>
@@ -74,6 +74,22 @@
             
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>nexusfx</id>
+            <name>Seamfix Internal</name>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <url>http://singlewindow.seamfix.com:7997/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>maven2-repository.java.net</id>
+            <name>Java.net Repository for Maven 2</name>
+            <url>http://download.java.net/maven/2/</url>
+        </repository>
+    </repositories>
 
     <distributionManagement>
         <repository>

@@ -15,4 +15,6 @@ public interface IclockerUserExtRepository extends JpaRepository<IclockerUserExt
     public IclockerUserExt findByUid(AppUser uid);
 
     public IclockerUserExt findByUserId(String userId);
+
+    public IclockerUserExt findTopByOrderByCreateDateDesc();
 }

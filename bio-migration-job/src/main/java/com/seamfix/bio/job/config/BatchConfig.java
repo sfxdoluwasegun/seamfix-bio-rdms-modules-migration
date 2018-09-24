@@ -350,14 +350,14 @@ public class BatchConfig {
     public MongoItemReader<BioUser> bioUserIclockerUserExtReader() {
         MongoItemReader<BioUser> reader = new MongoItemReader<>();
         reader.setTemplate(mongoTemplate);
-        reader.setCollection("users");
+        reader.setCollection("biocloud_users");
         reader.setSort(new HashMap<String, Sort.Direction>() {
             {
                 put("_id", Direction.DESC);
             }
         });
         reader.setTargetType(BioUser.class);
-        reader.setQuery(new Query(where("created").gt(selector.getUserLastTime())));
+        reader.setQuery(new Query(where("created").gt(selector.getUserExtLastTime())));
         return reader;
     }
 

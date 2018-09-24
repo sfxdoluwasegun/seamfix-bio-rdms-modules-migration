@@ -5,16 +5,13 @@
  */
 package com.seamfix.bio.entities;
 
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import java.util.Date;
 
 /**
  *
@@ -39,5 +36,9 @@ public class IclockerUserExt extends BaseEntity {
     private String bio;
 
     private String userId;
+
+    @Column(name = "ENROLLED_TIME", nullable = true)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date enrolledTime;
 
 }
