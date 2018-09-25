@@ -341,23 +341,23 @@ public class BatchConfig {
     @Bean
     @Qualifier(value = "iclockerUserExtStep")
     public Step iclockerUserExtStep() {
-        return stepBuilderFactory.get("iclockerUserExtStep").<BioUser, IclockerUserExt>chunk(1)
-                .reader(bioUserIclockerUserExtReader()).processor(new IclockerUserExtProcessor(userRepository, mongodbIclockerUserExtRepository, iclockerUserExtRepository)).faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper()).build();
+        return stepBuilderFactory.get("iclockerUserExtStep").<BioCloudUserExt, IclockerUserExt>chunk(1)
+                .reader(bioUserIclockerUserExtReader()).processor( new IclockerUserExtProcessor(userRepository, mongodbIclockerUserExtRepository, iclockerUserExtRepository)).faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper()).build();
     }
 
     @Bean
     @StepScope 
-    public MongoItemReader<BioUser> bioUserIclockerUserExtReader() {
-        MongoItemReader<BioUser> reader = new MongoItemReader<>();
+    public MongoItemReader<BioCloudUserExt> bioUserIclockerUserExtReader() {
+        MongoItemReader<BioCloudUserExt> reader = new MongoItemReader<>();
         reader.setTemplate(mongoTemplate);
-        reader.setCollection("users");
+        reader.setCollection("biocloud_users");
         reader.setSort(new HashMap<String, Sort.Direction>() {
             {
                 put("_id", Direction.DESC);
             }
         });
-        reader.setTargetType(BioUser.class);
-        reader.setQuery(new Query(where("created").gt(selector.getUserLastTime())));
+        reader.setTargetType(BioCloudUserExt.class);
+        reader.setQuery("{}");
         return reader;
     }
 
