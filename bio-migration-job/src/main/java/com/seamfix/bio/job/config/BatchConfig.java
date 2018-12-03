@@ -1,5 +1,6 @@
 package com.seamfix.bio.job.config;
 
+import com.sf.biocloud.entity.ProspectiveUsers;
 import org.slf4j.Logger;
 import java.util.HashMap;
 import org.slf4j.LoggerFactory;
@@ -118,6 +119,9 @@ public class BatchConfig {
     @Autowired
     TimeSelectorService selector;
 
+    @Autowired
+    ProspectiveUsersRepository prospectiveUsersRepository;
+
     @Bean
     public SkipPolicy nullPointerExceptionProcessorSkipper() {
         return new NullPointerExceptionProcessorSkipper();
@@ -138,7 +142,7 @@ public class BatchConfig {
         return jobBuilderFactory.get("job").incrementer(new RunIdIncrementer()).listener(new MigrationListener())
                 .flow(orgTypeStep()).next(orgStep()).next(projectStep())./**/
                 next(countryStateStep()).next(locationStep()).next(userStep()).
-                next(userPhotoStep()).next(iclockerUserExtStep()).next(iclockerUserRoleStep()).next(bioregistraUserRoleStep()).next(userInvitationStep()).next(employeeStep()).next(attendanceLogStep()).next(tranRefLogStep()).next(subscriptionStep()).next(subscriptionPaymentHistoryStep()).next(subscriptionPlanStep()).end().build();
+                next(userPhotoStep()).next(iclockerUserExtStep()).next(iclockerUserRoleStep()).next(bioregistraUserRoleStep()).next(userInvitationStep()).next(employeeStep()).next(attendanceLogStep()).next(tranRefLogStep()).next(prospectiveUserStep()).next(subscriptionStep()).next(subscriptionPaymentHistoryStep()).next(subscriptionPlanStep()).end().build();
 
     }
 
@@ -577,6 +581,29 @@ public class BatchConfig {
         });
         reader.setTargetType(SubscriptionPlan.class);
         reader.setQuery(new Query(where("discount").ne(null)));
+        return reader;
+    }
+
+    @Bean
+    @Qualifier(value = "prospectiveUserStep")
+    public Step prospectiveUserStep() {
+        return stepBuilderFactory.get("prospectiveUserStep").<ProspectiveUsers, com.seamfix.bio.entities.ProspectiveUsers>chunk(5)
+                .reader(prospectiveUserReader()).processor(new ProspectiveUsersProcessor(prospectiveUsersRepository)).faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper()).build();
+    }
+
+    @Bean
+    @StepScope
+    public MongoItemReader<ProspectiveUsers> prospectiveUserReader() {
+        MongoItemReader<ProspectiveUsers> reader = new MongoItemReader<>();
+        reader.setTemplate(mongoTemplate);
+        reader.setCollection("prospective_users");
+        reader.setSort(new HashMap<String, Sort.Direction>() {
+            {
+                put("_id", Direction.DESC);
+            }
+        });
+        reader.setTargetType(ProspectiveUsers.class);
+        reader.setQuery("{}");
         return reader;
     }
 

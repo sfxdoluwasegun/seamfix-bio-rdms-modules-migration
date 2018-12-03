@@ -83,4 +83,8 @@ public class EmployeeAttendanceLog extends BaseEntity {
 
     private String orgId;
 
+    private String jobId;
+
+    private String status;
+
 }
