@@ -28,6 +28,7 @@ public class ProspectiveUsersProcessor implements ItemProcessor<ProspectiveUsers
         }
         converted.setExpTime(log.getExpTime());
         converted.setToken(log.getToken());
+        converted.setActive(log.isActive());
 
         prospectiveUsersRepository.save(converted);
         return converted;
