@@ -19,7 +19,7 @@ import java.util.Date;
 public class EmployeeAttendanceLogProcessor implements ItemProcessor<AttendanceLog, EmployeeAttendanceLog> {
     
     private static final Logger logg = LoggerFactory.getLogger(EmployeeAttendanceLogProcessor.class);
-    
+
     private final LocationRepository locationRepository;
     private final OrganisationRepository organisationRepository;
     private final EmployeeAttendanceRepository employeeAttendanceRepository;
@@ -91,7 +91,15 @@ public class EmployeeAttendanceLogProcessor implements ItemProcessor<AttendanceL
                 converted.setTime(ZonedDateTime.ofInstant(i, ZoneId.systemDefault()));
             }
         }
-        
+
+        if(log.getJobId() != null) {
+            converted.setJobId(log.getJobId());
+        }
+
+        if(log.getStatus() != null) {
+            converted.setStatus(log.getStatus().toString());
+        }
+
         if (log.getTime() != null) {
             converted.setCreateDate(new Date(log.getCreated()));
         }
