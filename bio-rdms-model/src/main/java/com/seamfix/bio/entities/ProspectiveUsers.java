@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "PROSPECTIVE_USERS")
+@Table(name = "PROSPECTIVE_USER")
 @Cacheable(true)
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Data
@@ -20,4 +20,6 @@ public class ProspectiveUsers extends BaseEntity {
     private String token;
 
     private long expTime;
+
+    private String createdBy;
 }
