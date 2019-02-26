@@ -140,9 +140,11 @@ public class BatchConfig {
     @Bean
     public Job job() {
         return jobBuilderFactory.get("job").incrementer(new RunIdIncrementer()).listener(new MigrationListener())
-                .flow(orgTypeStep()).next(orgStep()).next(projectStep())./**/
-                next(countryStateStep()).next(locationStep()).next(userStep()).
-                next(userPhotoStep()).next(iclockerUserExtStep()).next(iclockerUserRoleStep()).next(bioregistraUserRoleStep()).next(userInvitationStep()).next(employeeStep()).next(attendanceLogStep()).next(tranRefLogStep()).next(prospectiveUserStep()).next(subscriptionStep()).next(subscriptionPaymentHistoryStep()).next(subscriptionPlanStep()).end().build();
+                .flow(orgTypeStep())
+                .next(orgStep()).next(projectStep())/**/
+                .next(countryStateStep()).next(locationStep()).next(userStep())
+                .next(userPhotoStep()).next(iclockerUserExtStep()).next(iclockerUserRoleStep()).next(bioregistraUserRoleStep()).next(userInvitationStep()).next(employeeStep()).next(attendanceLogStep()).next(tranRefLogStep()).next(prospectiveUserStep()).next(subscriptionStep()).next(subscriptionPaymentHistoryStep()).next(subscriptionPlanStep())
+                .end().build();
 
     }
 
@@ -476,7 +478,7 @@ public class BatchConfig {
             }
         });
         reader.setTargetType(AttendanceLog.class);
-        reader.setQuery(new Query(where("created").gt(selector.getEmployeeAttLogLastTime())));
+        reader.setQuery("{lastModified: {$gte: " + selector.getEmployeeAttLogLastTime() + "}}");
         return reader;
     }
 
