@@ -37,6 +37,8 @@ public class IclockerUserExt extends BaseEntity {
 
     private String userId;
 
+    private String signupMedium;
+
     @Column(name = "ENROLLED_TIME", nullable = true)
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date enrolledTime;
