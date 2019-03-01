@@ -51,6 +51,11 @@ public class IclockerUserExtProcessor implements ItemProcessor<BioCloudUserExt, 
             if (userExt.getCreated() != null) {
                 converted.setCreateDate(new Date(userExt.getCreated()));
             }
+
+            if(userExt.getSignupMedium() != null) {
+                converted.setSignupMedium(userExt.getSignupMedium().toString());
+            }
+
             iclockerUserExtRepository.save(converted);
 
         }

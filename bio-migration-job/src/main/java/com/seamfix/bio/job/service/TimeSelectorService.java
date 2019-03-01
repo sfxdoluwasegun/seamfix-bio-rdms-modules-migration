@@ -135,9 +135,9 @@ public class TimeSelectorService {
 
     public Long getEmployeeAttLogLastTime() {
         Long time = new Long(0);
-        EmployeeAttendanceLog attLog = attLogRepository.findTopByOrderByCreateDateDesc();
-        if (attLog != null && attLog.getCreateDate() != null) {
-            time = attLog.getCreateDate().getTime();
+        EmployeeAttendanceLog attLog = attLogRepository.findTopByOrderByLastModified();
+        if (attLog != null && attLog.getLastModified() != null) {
+            time = attLog.getLastModified().getTime();
         }
         return time;
 
