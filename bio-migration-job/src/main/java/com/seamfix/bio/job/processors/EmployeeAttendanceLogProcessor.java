@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.List;
 
 public class EmployeeAttendanceLogProcessor implements ItemProcessor<AttendanceLog, EmployeeAttendanceLog> {
     
@@ -35,10 +36,15 @@ public class EmployeeAttendanceLogProcessor implements ItemProcessor<AttendanceL
         
         logg.info("Employee Attendance Log migration job is in progress!");
 
-        //check if job already exists
-        EmployeeAttendanceLog existingLog = employeeAttendanceRepository.findByJobId(log.getJobId());
+        List<EmployeeAttendanceLog> existingLog = null;
 
-        if (existingLog == null) {
+        //check if job already exists
+        if(log.getJobId() != null) {
+            existingLog = employeeAttendanceRepository.findByJobId(log.getJobId());
+        }
+
+
+        if (existingLog == null || existingLog.isEmpty()) {
 
             EmployeeAttendanceLog converted = new EmployeeAttendanceLog();
             Organisation org = organisationRepository.findByOrgId(log.getOrgId());
@@ -113,10 +119,10 @@ public class EmployeeAttendanceLogProcessor implements ItemProcessor<AttendanceL
 
             return converted;
         }else {
-            if(log.getStatus() != null && log.getJobId() != null) {
-                employeeAttendanceRepository.updateAttendanceStatus(log.isMatch(), log.getStatus().toString(), log.getJobId());
+            if(log.getStatus() != null && log.getJobId() != null && log.getLastModified() != null) {
+                employeeAttendanceRepository.updateAttendanceStatus(log.isMatch(), log.getStatus().toString(), log.getJobId(), new Date(log.getLastModified()));
             }
-            return existingLog;
+            return existingLog.get(0);
         }
     }
     
