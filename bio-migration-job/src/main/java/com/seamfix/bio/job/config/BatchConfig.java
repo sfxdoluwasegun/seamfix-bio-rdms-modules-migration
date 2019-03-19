@@ -478,6 +478,7 @@ public class BatchConfig {
             }
         });
         reader.setTargetType(AttendanceLog.class);
+//        reader.setQuery("{lastModified: {'$gte': +" + selector.getEmployeeAttLogLastTime() + "}}");
         reader.setQuery(new Query(where("lastModified").gte(selector.getEmployeeAttLogLastTime())));
         return reader;
     }
