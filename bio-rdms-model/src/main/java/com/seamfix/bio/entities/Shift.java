@@ -1,13 +1,15 @@
 package com.seamfix.bio.entities;
 
 import lombok.Data;
+
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.time.DayOfWeek;
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-
 import org.hibernate.annotations.Cache;
+import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @Entity
@@ -16,36 +18,37 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Shift extends BaseEntity {
 
-    @NotNull
     private String shiftId;
 
-    @NotNull
     private String name;
 
-    @NotNull
     private String locId;
 
-    @NotNull
     private String orgId;
 
-    @NotNull
-    private Long resumption;
+    @Column(name = "resumption")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private ZonedDateTime resumption;
 
     @Column(name = "grace_period_in_min")
     private int gracePeriodInMinutes;
 
     @Column(name = "clock_out_time")
-    private Long clockOutTime;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private ZonedDateTime clockOutTime;
 
     @Column(name = "created_by")
     private String createdBy;
 
     @Column(name = "break_time_start")
-    private Long breakTimeStart;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private ZonedDateTime breakTimeStart;
 
     @Column(name = "break_time_end")
-    private Long breakTimeEnd;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private ZonedDateTime breakTimeEnd;
 
     @Column(name = "working_days")
-    private List<DayOfWeek> workingDays;
+    private String workingDays;
+
 }

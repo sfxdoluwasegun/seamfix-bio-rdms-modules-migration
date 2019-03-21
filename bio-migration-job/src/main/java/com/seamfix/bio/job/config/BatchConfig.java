@@ -1,6 +1,7 @@
 package com.seamfix.bio.job.config;
 
 import com.sf.biocloud.entity.ProspectiveUsers;
+import com.sf.biocloud.entity.Shift;
 import org.slf4j.Logger;
 import java.util.HashMap;
 import org.slf4j.LoggerFactory;
@@ -87,6 +88,9 @@ public class BatchConfig {
     UserPhotoRepository userPhotoRepository;
 
     @Autowired
+    ShiftRepository shiftRepository;
+
+    @Autowired
     UserInvitationRepository userInvitationRepository;
 
     @Autowired
@@ -143,7 +147,11 @@ public class BatchConfig {
                 .flow(orgTypeStep())
                 .next(orgStep()).next(projectStep())/**/
                 .next(countryStateStep()).next(locationStep()).next(userStep())
-                .next(userPhotoStep()).next(iclockerUserExtStep()).next(iclockerUserRoleStep()).next(bioregistraUserRoleStep()).next(userInvitationStep()).next(employeeStep()).next(attendanceLogStep()).next(tranRefLogStep()).next(prospectiveUserStep()).next(subscriptionStep()).next(subscriptionPaymentHistoryStep()).next(subscriptionPlanStep())
+                .next(userPhotoStep()).next(iclockerUserExtStep()).next(iclockerUserRoleStep())
+                .next(bioregistraUserRoleStep()).next(userInvitationStep()).next(employeeStep())
+                .next(attendanceLogStep()).next(tranRefLogStep()).next(prospectiveUserStep())
+                .next(subscriptionStep()).next(subscriptionPaymentHistoryStep()).next(subscriptionPlanStep())
+                .next(shiftStep())
                 .end().build();
 
     }
@@ -608,6 +616,33 @@ public class BatchConfig {
         reader.setTargetType(ProspectiveUsers.class);
         reader.setQuery("{}");
         return reader;
+    }
+
+    @Bean
+    @StepScope
+    public MongoItemReader<Shift> shiftReader() {
+        MongoItemReader<Shift> reader = new MongoItemReader<>();
+        reader.setTemplate(mongoTemplate);
+        reader.setCollection("shift");
+        reader.setSort(new HashMap<String, Sort.Direction>() {
+            {
+                put("_id", Direction.DESC);
+            }
+        });
+        reader.setTargetType(Shift.class);
+        reader.setQuery("{}");
+        return reader;
+    }
+
+    @Bean
+    @Qualifier(value = "shiftStep")
+    public Step shiftStep() {
+        return stepBuilderFactory.get("shiftStep").<Shift, com.seamfix.bio.entities.Shift>chunk(5)
+                .reader(shiftReader())
+                .processor(new ShiftProcessor(shiftRepository, locationRepository))
+                .faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper())
+                .faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper())
+                .build();
     }
 
 }

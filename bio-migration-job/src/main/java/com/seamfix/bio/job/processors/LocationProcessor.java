@@ -46,7 +46,7 @@ public class LocationProcessor implements ItemProcessor<Location, com.seamfix.bi
                 try {
                     converted.setClockOutTime(ZonedDateTime.ofInstant(i, ZoneId.of(loc.getResumptionTimezoneId())));
                 } catch (DateTimeException ex) {
-                    converted.setResumption(ZonedDateTime.ofInstant(i, ZoneId.systemDefault()));
+                    converted.setClockOutTime(ZonedDateTime.ofInstant(i, ZoneId.systemDefault()));
                 }
 
             }
