@@ -20,6 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <base.nexus.url>68.169.50.86:7997</base.nexus.url>
     </properties>
 
     <dependencies>
@@ -77,7 +78,11 @@
                     <artifactId>nw.commons</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         
         <dependency>
@@ -101,12 +106,12 @@
         <repository>
             <id>deployment</id>
             <name>Internal Releases</name>
-            <url>http://singlewindow.seamfix.com:7997/nexus/content/repositories/releases</url>
+            <url>${base.nexus.url}/nexus/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
             <id>deployment</id>
             <name>Internal Releases</name>
-            <url>http://singlewindow.seamfix.com:7997/nexus/content/repositories/snapshots</url>
+            <url>${base.nexus.url}/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
     <name>Bio:bio-migration-job</name>

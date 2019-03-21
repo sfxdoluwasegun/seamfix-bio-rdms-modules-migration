@@ -4,6 +4,8 @@ import lombok.Data;
 import java.util.List;
 import java.time.DayOfWeek;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -14,14 +16,19 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Shift extends BaseEntity {
 
+    @NotNull
     private String shiftId;
 
+    @NotNull
     private String name;
 
+    @NotNull
     private String locId;
 
+    @NotNull
     private String orgId;
 
+    @NotNull
     private Long resumption;
 
     @Column(name = "grace_period_in_min")
