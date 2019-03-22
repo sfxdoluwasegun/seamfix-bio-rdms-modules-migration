@@ -6,15 +6,12 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Entity;
 import javax.persistence.Column;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @Entity
 @Table(name = "SHIFT", indexes = {
         @Index(name = "shiftIdex", columnList = "shiftId,locId,orgId")})
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Shift extends BaseEntity {
 
     private String shiftId;
