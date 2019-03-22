@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     public Project findByPid(String pid);
-    
+
     public Project findTopByOrderByCreateDateDesc();
 
 }
