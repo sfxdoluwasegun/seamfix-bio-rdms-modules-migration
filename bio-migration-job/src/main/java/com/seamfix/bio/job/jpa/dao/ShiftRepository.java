@@ -9,6 +9,4 @@ public interface ShiftRepository extends JpaRepository<Shift, Long> {
 
     Shift findByShiftId(String shiftId);
 
-    Shift findByNameAndCreatedBy(String name, String createdBy);
-
 }
