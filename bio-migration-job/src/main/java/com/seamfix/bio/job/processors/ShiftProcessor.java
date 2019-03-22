@@ -1,16 +1,19 @@
 package com.seamfix.bio.job.processors;
 
-import com.seamfix.bio.entities.Location;
-import com.seamfix.bio.job.jpa.dao.LocationRepository;
+import java.util.Date;
+import java.time.ZoneId;
 import org.slf4j.Logger;
+import java.time.Instant;
+import java.time.DayOfWeek;
 import org.slf4j.LoggerFactory;
+import java.time.ZonedDateTime;
+import java.time.DateTimeException;
 import com.sf.biocloud.entity.Shift;
+import com.seamfix.bio.entities.Location;
 import org.apache.commons.lang3.StringUtils;
 import com.seamfix.bio.job.jpa.dao.ShiftRepository;
 import org.springframework.batch.item.ItemProcessor;
-
-import java.time.*;
-import java.util.Date;
+import com.seamfix.bio.job.jpa.dao.LocationRepository;
 
 public class ShiftProcessor implements ItemProcessor<Shift, com.seamfix.bio.entities.Shift> {
 
@@ -56,7 +59,11 @@ public class ShiftProcessor implements ItemProcessor<Shift, com.seamfix.bio.enti
         existingRec.setCreatedBy(updatedRec.getCreatedBy());
         existingRec.setCreateDate(new Date(updatedRec.getCreated()));
 
-        if (updatedRec.getResumption() != null) {
+        if (updatedRec.getLastModified() != null) {
+            existingRec.setLastModified(new Date(updatedRec.getLastModified()));
+        }
+
+        if (updatedRec.getResumption() != null && updatedRec.getResumption() > 0) {
             Instant instant = Instant.ofEpochMilli(updatedRec.getResumption());
             if (StringUtils.isBlank(timeZoneId)) {
                 existingRec.setResumption(ZonedDateTime.ofInstant(instant, ZoneId.systemDefault()));
@@ -70,7 +77,7 @@ public class ShiftProcessor implements ItemProcessor<Shift, com.seamfix.bio.enti
             }
         }
 
-        if (updatedRec.getClockOutTime() != null) {
+        if (updatedRec.getClockOutTime() != null && updatedRec.getClockOutTime() > 0) {
             Instant instant = Instant.ofEpochMilli(updatedRec.getClockOutTime());
             if (StringUtils.isBlank(timeZoneId)) {
                 existingRec.setClockOutTime(ZonedDateTime.ofInstant(instant, ZoneId.systemDefault()));
@@ -84,7 +91,7 @@ public class ShiftProcessor implements ItemProcessor<Shift, com.seamfix.bio.enti
             }
         }
 
-        if (updatedRec.getBreakTimeStart() != null) {
+        if (updatedRec.getBreakTimeStart() != null && updatedRec.getBreakTimeStart() > 0) {
             Instant instant = Instant.ofEpochMilli(updatedRec.getBreakTimeStart());
             if (StringUtils.isBlank(timeZoneId)) {
                 existingRec.setBreakTimeStart(ZonedDateTime.ofInstant(instant, ZoneId.systemDefault()));
@@ -98,7 +105,7 @@ public class ShiftProcessor implements ItemProcessor<Shift, com.seamfix.bio.enti
             }
         }
 
-        if (updatedRec.getBreakTimeEnd() != null) {
+        if (updatedRec.getBreakTimeEnd() != null && updatedRec.getBreakTimeStart() > 0) {
             Instant instant = Instant.ofEpochMilli(updatedRec.getBreakTimeEnd());
             if (StringUtils.isBlank(timeZoneId)) {
                 existingRec.setBreakTimeEnd(ZonedDateTime.ofInstant(instant, ZoneId.systemDefault()));

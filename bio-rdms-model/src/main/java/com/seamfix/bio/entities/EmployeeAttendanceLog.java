@@ -41,6 +41,8 @@ public class EmployeeAttendanceLog extends BaseEntity {
     @Column(unique = true)
     private String oldId;
 
+    private String shiftId;
+
     private double longitude;
 
     private double matchConfidenceLevel;
@@ -78,6 +80,10 @@ public class EmployeeAttendanceLog extends BaseEntity {
     @ManyToOne(optional = true)
     @JoinColumn(nullable = true, name = "ORGANISATION_ID")
     private Organisation organisation;
+
+    @ManyToOne()
+    @JoinColumn(name = "loc_shift_id")
+    private Shift shift;
 
     private String locId;
 

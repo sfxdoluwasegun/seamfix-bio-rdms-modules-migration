@@ -1,13 +1,12 @@
 package com.seamfix.bio.entities;
 
 import lombok.Data;
-
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.time.DayOfWeek;
-import javax.persistence.*;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import javax.persistence.Entity;
+import javax.persistence.Column;
 import org.hibernate.annotations.Cache;
-import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 

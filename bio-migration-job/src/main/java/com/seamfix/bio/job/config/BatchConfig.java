@@ -471,7 +471,7 @@ public class BatchConfig {
     @Qualifier(value = "attendanceLogStep")
     public Step attendanceLogStep() {
         return stepBuilderFactory.get("attendanceLogStep").<AttendanceLog, EmployeeAttendanceLog>chunk(5)
-                .reader(attendanceLogReader()).processor(new EmployeeAttendanceLogProcessor(locationRepository, organisationRepository, employeeAttendanceRepository)).faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper()).build();
+                .reader(attendanceLogReader()).processor(new EmployeeAttendanceLogProcessor(shiftRepository, locationRepository, organisationRepository, employeeAttendanceRepository)).faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper()).build();
     }
 
     @Bean

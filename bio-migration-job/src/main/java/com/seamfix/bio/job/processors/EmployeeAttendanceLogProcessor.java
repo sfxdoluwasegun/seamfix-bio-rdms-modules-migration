@@ -3,13 +3,18 @@ package com.seamfix.bio.job.processors;
 import com.seamfix.bio.entities.EmployeeAttendanceLog;
 import com.seamfix.bio.entities.Location;
 import com.seamfix.bio.entities.Organisation;
+import com.seamfix.bio.entities.Shift;
 import com.seamfix.bio.job.jpa.dao.EmployeeAttendanceRepository;
+import com.seamfix.bio.job.jpa.dao.ShiftRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import com.seamfix.bio.job.jpa.dao.LocationRepository;
 import com.seamfix.bio.job.jpa.dao.OrganisationRepository;
 import com.sf.biocloud.entity.AttendanceLog;
+import sun.tools.tree.ShiftRightExpression;
+
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -21,11 +26,13 @@ public class EmployeeAttendanceLogProcessor implements ItemProcessor<AttendanceL
     
     private static final Logger logg = LoggerFactory.getLogger(EmployeeAttendanceLogProcessor.class);
 
+    private final ShiftRepository shiftRepository;
     private final LocationRepository locationRepository;
     private final OrganisationRepository organisationRepository;
     private final EmployeeAttendanceRepository employeeAttendanceRepository;
     
-    public EmployeeAttendanceLogProcessor(LocationRepository locationRepository, OrganisationRepository organisationRepository, EmployeeAttendanceRepository employeeAttendanceRepository) {
+    public EmployeeAttendanceLogProcessor(ShiftRepository shiftRepository, LocationRepository locationRepository, OrganisationRepository organisationRepository, EmployeeAttendanceRepository employeeAttendanceRepository) {
+        this.shiftRepository = shiftRepository;
         this.locationRepository = locationRepository;
         this.organisationRepository = organisationRepository;
         this.employeeAttendanceRepository = employeeAttendanceRepository;
@@ -47,20 +54,27 @@ public class EmployeeAttendanceLogProcessor implements ItemProcessor<AttendanceL
         if (existingLog == null || existingLog.isEmpty()) {
 
             EmployeeAttendanceLog converted = new EmployeeAttendanceLog();
+
             Organisation org = organisationRepository.findByOrgId(log.getOrgId());
             if (org != null) {
                 converted.setOrganisation(org);
             }
+
             Location loc = locationRepository.findByLocId(log.getLocId());
             if (loc != null) {
                 converted.setLocation(loc);
             }
 
-            converted.setActionType(log.getActionType() == null || log.getActionType().trim().isEmpty() ? "" : log.getActionType());
+            Shift shift = shiftRepository.findByShiftId(log.getShiftId());
+            if (shift != null) {
+                converted.setShift(shift);
+            }
+
+            converted.setActionType(StringUtils.isNotBlank(log.getActionType()) ? log.getActionType() : "");
             if (log.getAuthMode() != null) {
                 converted.setAuthMode(log.getAuthMode());
             }
-            converted.setClockInAddress(log.getClockInAddress() == null || log.getClockInAddress().trim().isEmpty() ? "" : log.getClockInAddress());
+            converted.setClockInAddress(StringUtils.isNotBlank(log.getClockInAddress()) ? log.getClockInAddress() : "");
             if (log.getClockInLocationStatus() != null) {
                 converted.setClockInLocationStatus(log.getClockInLocationStatus());
             }
@@ -72,11 +86,12 @@ public class EmployeeAttendanceLogProcessor implements ItemProcessor<AttendanceL
                 converted.setCreateDate(new Date(log.getCreated()));
             }
             converted.setOldId(log.getId().toHexString());
-            converted.setDescription(log.getDescription() == null || log.getDescription().trim().isEmpty() ? "" : log.getDescription());
-            converted.setDeviceId(log.getDeviceId() == null || log.getDeviceId().trim().isEmpty() ? "" : log.getDeviceId());
-            converted.setEmail(log.getEmail() == null || log.getEmail().trim().isEmpty() ? "" : log.getEmail());
-            converted.setLocId(log.getLocId() == null || log.getLocId().trim().isEmpty() ? "" : log.getLocId());
-            converted.setOrgId(log.getOrgId() == null || log.getOrgId().trim().isEmpty() ? "" : log.getOrgId());
+            converted.setDescription(StringUtils.isNotBlank(log.getDescription()) ? log.getDescription() : "");
+            converted.setDeviceId(StringUtils.isNotBlank(log.getDeviceId()) ? log.getDeviceId() : "");
+            converted.setEmail(StringUtils.isNotBlank(log.getEmail()) ? log.getEmail() : "");
+            converted.setLocId(StringUtils.isNotBlank(log.getLocId()) ? log.getLocId() : "");
+            converted.setOrgId(StringUtils.isNotBlank(log.getOrgId()) ? log.getOrgId() : "");
+            converted.setShiftId(StringUtils.isNotBlank(log.getShiftId()) ? log.getShiftId() : "");
             converted.setLatitude(log.getLatitude());
             converted.setLongitude(log.getLongitude());
             converted.setMatch(log.isMatch());
