@@ -20,7 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <base.nexus.url>68.169.50.86:7997</base.nexus.url>
+        <base.nexus.url>https://nexus.seamfix.com</base.nexus.url>
     </properties>
 
     <dependencies>

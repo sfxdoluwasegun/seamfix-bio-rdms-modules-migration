@@ -122,6 +122,9 @@ public class BatchConfig {
     @Autowired
     ProspectiveUsersRepository prospectiveUsersRepository;
 
+    @Autowired
+    ReEnrolmentRepository reEnrolmentRepository;
+
     @Bean
     public SkipPolicy nullPointerExceptionProcessorSkipper() {
         return new NullPointerExceptionProcessorSkipper();
@@ -143,6 +146,7 @@ public class BatchConfig {
                 .flow(orgTypeStep())
                 .next(orgStep()).next(projectStep())/**/
                 .next(countryStateStep()).next(locationStep()).next(userStep())
+                .next(reEnrolmentLogStep())
                 .next(userPhotoStep()).next(iclockerUserExtStep()).next(iclockerUserRoleStep()).next(bioregistraUserRoleStep()).next(userInvitationStep()).next(employeeStep()).next(attendanceLogStep()).next(tranRefLogStep()).next(prospectiveUserStep()).next(subscriptionStep()).next(subscriptionPaymentHistoryStep()).next(subscriptionPlanStep())
                 .end().build();
 
@@ -607,6 +611,29 @@ public class BatchConfig {
         });
         reader.setTargetType(ProspectiveUsers.class);
         reader.setQuery("{}");
+        return reader;
+    }
+
+    @Bean
+    @Qualifier(value = "reEnrolmentLogStep")
+    public Step reEnrolmentLogStep() {
+        return stepBuilderFactory.get("reEnrolmentLogStep").<ReEnrollmentLog, ReEnrolmentLog>chunk(5)
+                .reader(reEnrolmentLogReader()).processor(new ReEnrolmentLogProcessor(reEnrolmentRepository)).faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper()).build();
+    }
+
+    @Bean
+    @StepScope
+    public MongoItemReader<ReEnrollmentLog> reEnrolmentLogReader() {
+        MongoItemReader<ReEnrollmentLog> reader = new MongoItemReader<>();
+        reader.setTemplate(mongoTemplate);
+        reader.setCollection("reenrollment-log");
+        reader.setSort(new HashMap<String, Sort.Direction>() {
+            {
+                put("_id", Direction.DESC);
+            }
+        });
+        reader.setTargetType(ReEnrollmentLog.class);
+        reader.setQuery(new Query(where("lastModified").gt(selector.getReEnrolmentLogLastModifiedTime())));
         return reader;
     }
 

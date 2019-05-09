@@ -47,5 +47,6 @@ public class Shift extends BaseEntity {
     private Long breakTimeEnd;
 
     @Column(name = "working_days")
+    @ElementCollection(targetClass = DayOfWeek.class)
     private List<DayOfWeek> workingDays;
 }
