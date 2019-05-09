@@ -24,7 +24,6 @@ public class ReEnrolmentLogProcessor implements ItemProcessor<ReEnrollmentLog, R
 
         ReEnrolmentLog converted = new ReEnrolmentLog();
 
-//        converted.setEmail(reEnrollmentLog.getEmail());
         converted.setUserId(reEnrollmentLog.getUserId());
         converted.setJobId(reEnrollmentLog.getJobId());
         converted.setReEnrolmentTime(new Date(reEnrollmentLog.getReEnrollmentTime()));
