@@ -82,7 +82,7 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
-            <url>http://68.169.50.86:7997/nexus/content/groups/public</url>
+            <url>https://nexus.seamfix.com/nexus/content/groups/public</url>
         </repository>
         <repository>
             <id>maven2-repository.java.net</id>
@@ -95,12 +95,12 @@
         <repository>
             <id>deployment</id>
             <name>Internal Releases</name>
-            <url>http://singlewindow.seamfix.com:7997/nexus/content/repositories/releases</url>
+            <url>https://nexus.seamfix.com/nexus/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
             <id>deployment</id>
             <name>Internal Releases</name>
-            <url>http://singlewindow.seamfix.com:7997/nexus/content/repositories/snapshots</url>
+            <url>https://nexus.seamfix.com/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
     <name>Bio:bio-rdms-model</name>
