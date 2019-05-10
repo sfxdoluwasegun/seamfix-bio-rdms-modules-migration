@@ -85,6 +85,10 @@ public class EmployeeAttendanceLogProcessor implements ItemProcessor<AttendanceL
                 converted.setPunctualityType(log.getPunctualityType());
             }
 
+            if(log.getProviderJobId() != null) {
+                converted.setProviderJobId(log.getProviderJobId());
+            }
+
             if (log.getTime() != null) {
                 Instant i = Instant.ofEpochMilli(log.getTime());
                 if (loc != null) {
