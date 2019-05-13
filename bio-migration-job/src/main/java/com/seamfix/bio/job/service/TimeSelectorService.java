@@ -50,6 +50,9 @@ public class TimeSelectorService {
     @Autowired
     ReEnrolmentRepository reEnrolmentRepository;
 
+    @Autowired
+    AuthAuditRepository authAuditRepository;
+
     public Long getProjectLastTime() {
         Long time = new Long(0);
         Project proj = projectRepository.findTopByOrderByCreateDateDesc();
@@ -157,5 +160,16 @@ public class TimeSelectorService {
         return time;
 
     }
+
+    public Long getAuthAuditLogLastModifiedTime() {
+        Long time = new Long(0);
+        AuthAudit log = authAuditRepository.findTopByOrderByLastModifiedDesc();
+        if (log != null && log.getLastModified() != null) {
+            time = log.getLastModified().getTime();
+        }
+        return time;
+
+    }
+
 
 }
