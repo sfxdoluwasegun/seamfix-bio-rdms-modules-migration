@@ -147,11 +147,11 @@ public class BatchConfig {
     public Job job() {
         return jobBuilderFactory.get("job").incrementer(new RunIdIncrementer()).listener(new MigrationListener())
                 .flow(orgTypeStep())
-//                .next(orgStep()).next(projectStep())/**/
-//                .next(countryStateStep()).next(locationStep()).next(userStep())
-//                .next(reEnrolmentLogStep())
+                .next(orgStep()).next(projectStep())/**/
+                .next(countryStateStep()).next(locationStep()).next(userStep())
+                .next(reEnrolmentLogStep())
                 .next(authAuditLogStep())
-//                .next(userPhotoStep()).next(iclockerUserExtStep()).next(iclockerUserRoleStep()).next(bioregistraUserRoleStep()).next(userInvitationStep()).next(employeeStep()).next(attendanceLogStep()).next(tranRefLogStep()).next(prospectiveUserStep()).next(subscriptionStep()).next(subscriptionPaymentHistoryStep()).next(subscriptionPlanStep())
+                .next(userPhotoStep()).next(iclockerUserExtStep()).next(iclockerUserRoleStep()).next(bioregistraUserRoleStep()).next(userInvitationStep()).next(employeeStep()).next(attendanceLogStep()).next(tranRefLogStep()).next(prospectiveUserStep()).next(subscriptionStep()).next(subscriptionPaymentHistoryStep()).next(subscriptionPlanStep())
                 .end().build();
 
     }
