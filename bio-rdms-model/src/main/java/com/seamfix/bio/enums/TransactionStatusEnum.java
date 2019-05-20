@@ -10,6 +10,6 @@ package com.seamfix.bio.enums;
  * @author Uchechukwu Onuoha 
  */
 public enum TransactionStatusEnum {
-    PENDING, SUCCESSFUL
+    PENDING, SUCCESSFUL, FAILED
 }
 

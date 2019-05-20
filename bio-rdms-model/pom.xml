@@ -38,7 +38,7 @@
         <dependency>
             <groupId>com.sf.biocloud</groupId>
             <artifactId>bc-model</artifactId>
-            <version>2.1.0-SNAPSHOT</version>
+            <version>2.3.0-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.sf.bioregistra</groupId>
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>com.sf.bioregistra</groupId>
             <artifactId>br-model</artifactId>
-            <version>2.5.0-SNAPSHOT</version>
+            <version>2.11.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
@@ -82,7 +82,7 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
-            <url>http://singlewindow.seamfix.com:7997/nexus/content/groups/public</url>
+            <url>https://nexus.seamfix.com/nexus/content/groups/public</url>
         </repository>
         <repository>
             <id>maven2-repository.java.net</id>
@@ -95,12 +95,12 @@
         <repository>
             <id>deployment</id>
             <name>Internal Releases</name>
-            <url>http://singlewindow.seamfix.com:7997/nexus/content/repositories/releases</url>
+            <url>https://nexus.seamfix.com/nexus/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
             <id>deployment</id>
             <name>Internal Releases</name>
-            <url>http://singlewindow.seamfix.com:7997/nexus/content/repositories/snapshots</url>
+            <url>https://nexus.seamfix.com/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
     <name>Bio:bio-rdms-model</name>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.seamfix.bio</groupId>
+    <artifactId>br-rdms-model</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.4.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.sf.keyczar</groupId>
+            <artifactId>sfx.crypto</artifactId>
+            <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.nimworks</groupId>
+                    <artifactId>nw.commons</artifactId>
+                </exclusion>
+            </exclusions>
+
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+       
+        <dependency>
+            <groupId>com.sf.bioregistra</groupId>
+            <artifactId>br-model</artifactId>
+            <version>2.11.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>  
+                    <groupId>org.mongodb</groupId>
+                    <artifactId>mongo-java-driver</artifactId>
+                </exclusion>
+                <exclusion>  
+                    <groupId>org.mongodb.morphia</groupId>
+                    <artifactId>morphia</artifactId>
+                </exclusion>
+                <exclusion>  
+                    <groupId>org.mongodb.morphia</groupId>
+                    <artifactId>morphia-validation</artifactId>
+                </exclusion>
+                <exclusion>  
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-validator</artifactId>
+                </exclusion>
+            </exclusions> 
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+        
+
+            
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>nexusfx</id>
+            <name>Seamfix Internal</name>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <url>http://singlewindow.seamfix.com:7997/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>maven2-repository.java.net</id>
+            <name>Java.net Repository for Maven 2</name>
+            <url>http://download.java.net/maven/2/</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>deployment</id>
+            <name>Internal Releases</name>
+            <url>http://singlewindow.seamfix.com:7997/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>deployment</id>
+            <name>Internal Releases</name>
+            <url>http://singlewindow.seamfix.com:7997/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+    <name>br-rdms-model</name>
+    <description>Biometric Data Migration model objects</description>
+    <organization>
+        <name>Seamfix Nigeria</name>
+        <url>http://www.seamfix.org</url>
+    </organization>
+
+    <issueManagement>
+        <url>https://seamfix.atlassian.net</url>
+        <system>Biometric Data Migration</system>
+    </issueManagement>
+</project>

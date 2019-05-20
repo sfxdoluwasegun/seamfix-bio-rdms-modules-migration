@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class ProspectiveUsersProcessor implements ItemProcessor<ProspectiveUsers, com.seamfix.bio.entities.ProspectiveUsers> {
 
-    private static final Logger logg = LoggerFactory.getLogger(EmployeeAttendanceLogProcessor.class);
+    private static final Logger logg = LoggerFactory.getLogger(ProspectiveUsersProcessor.class);
 
     private final ProspectiveUsersRepository prospectiveUsersRepository;
 

@@ -87,4 +87,7 @@ public class EmployeeAttendanceLog extends BaseEntity {
 
     private String status;
 
+    @Column(name = "provider_job_id")
+    private String providerJobId;
+
 }

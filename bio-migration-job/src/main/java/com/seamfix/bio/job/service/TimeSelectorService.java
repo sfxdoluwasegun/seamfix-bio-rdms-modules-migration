@@ -5,15 +5,7 @@
  */
 package com.seamfix.bio.job.service;
 
-import com.seamfix.bio.job.jpa.dao.CustomerSubscriptionPaymentHistoryRespository;
-import com.seamfix.bio.job.jpa.dao.UserInvitationRepository;
-import com.seamfix.bio.job.jpa.dao.ProjectRepository;
-import com.seamfix.bio.job.jpa.dao.LocationRepository;
-import com.seamfix.bio.job.jpa.dao.CustomerSubscriptionRepository;
-import com.seamfix.bio.job.jpa.dao.UserRepository;
-import com.seamfix.bio.job.jpa.dao.EmployeeAttendanceRepository;
-import com.seamfix.bio.job.jpa.dao.EmployeeRepository;
-import com.seamfix.bio.job.jpa.dao.TransactionRefLogRepository;
+import com.seamfix.bio.job.jpa.dao.*;
 import com.seamfix.bio.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +46,12 @@ public class TimeSelectorService {
 
     @Autowired
     com.seamfix.bio.job.jpa.dao.IclockerUserExtRepository iclockerUserExtRepository;
+
+    @Autowired
+    ReEnrolmentRepository reEnrolmentRepository;
+
+    @Autowired
+    AuthAuditRepository authAuditRepository;
 
     public Long getProjectLastTime() {
         Long time = new Long(0);
@@ -135,7 +133,7 @@ public class TimeSelectorService {
 
     public Long getEmployeeAttLogLastTime() {
         Long time = new Long(0);
-        EmployeeAttendanceLog attLog = attLogRepository.findTopByOrderByLastModified();
+        EmployeeAttendanceLog attLog = attLogRepository.findTopByOrderByLastModifiedDesc();
         if (attLog != null && attLog.getLastModified() != null) {
             time = attLog.getLastModified().getTime();
         }
@@ -152,5 +150,26 @@ public class TimeSelectorService {
         return time;
 
     }
+
+    public Long getReEnrolmentLogLastModifiedTime() {
+        Long time = new Long(0);
+        ReEnrolmentLog log = reEnrolmentRepository.findTopByOrderByLastModifiedDesc();
+        if (log != null && log.getLastModified() != null) {
+            time = log.getLastModified().getTime();
+        }
+        return time;
+
+    }
+
+    public Long getAuthAuditLogLastModifiedTime() {
+        Long time = new Long(0);
+        AuthAudit log = authAuditRepository.findTopByOrderByLastModifiedDesc();
+        if (log != null && log.getLastModified() != null) {
+            time = log.getLastModified().getTime();
+        }
+        return time;
+
+    }
+
 
 }
