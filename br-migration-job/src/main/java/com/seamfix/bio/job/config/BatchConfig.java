@@ -1,38 +1,40 @@
 package com.seamfix.bio.job.config;
 
-import org.slf4j.Logger;
-import java.util.HashMap;
-import org.slf4j.LoggerFactory;
 import com.seamfix.bio.entities.*;
 import com.seamfix.bio.job.events.*;
 import com.seamfix.bio.job.jpa.dao.*;
 import com.seamfix.bio.job.processors.*;
-import com.sf.bioregistra.entity.Country;
+import com.seamfix.bio.job.service.TimeSelectorService;
 import com.sf.bioregistra.entity.BioUser;
+import com.sf.bioregistra.entity.Country;
 import com.sf.bioregistra.entity.Project;
+import com.sf.bioregistra.entity.subscription.SubscriptionType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.data.domain.Sort;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.Sort.Direction;
-import com.seamfix.bio.job.service.TimeSelectorService;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.batch.item.data.MongoItemReader;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.batch.core.step.skip.SkipPolicy;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.batch.item.data.RepositoryItemWriter;
-import org.springframework.data.repository.core.RepositoryMetadata;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.data.repository.core.support.DefaultCrudMethods;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.step.skip.SkipPolicy;
+import org.springframework.batch.item.data.MongoItemReader;
+import org.springframework.batch.item.data.RepositoryItemWriter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.repository.core.RepositoryMetadata;
+import org.springframework.data.repository.core.support.DefaultCrudMethods;
 import org.springframework.data.repository.core.support.DefaultRepositoryMetadata;
-import com.sf.bioregistra.entity.subscription.SubscriptionType;
+
+import java.util.HashMap;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
  *
@@ -117,7 +119,14 @@ public class BatchConfig {
     @Qualifier(value = "subscriptionTypeStep")
     public Step subscriptionTypeStep() {
         return stepBuilderFactory.get("subscriptionTypeStep").<SubscriptionType, com.seamfix.bio.entities.SubscriptionType>chunk(10)
-                .reader(subscriptionTypeReader()).processor(new SubscriptionTypeProcessor()).faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).writer(subscriptionTypeWriter()).faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper()).build();
+                .reader(subscriptionTypeReader())
+                .processor(new SubscriptionTypeProcessor())
+                .faultTolerant()
+                .skipPolicy(nullPointerExceptionProcessorSkipper())
+                .writer(subscriptionTypeWriter())
+                .faultTolerant()
+                .skipPolicy(dataIntegrityViolationExceptionSkipper())
+                .build();
     }
 
     @Bean
@@ -151,7 +160,14 @@ public class BatchConfig {
     @Qualifier(value = "orgStep")
     public Step orgStep() {
         return stepBuilderFactory.get("orgStep").<com.seamfix.bio.extended.mongodb.entities.Organization, Organisation>chunk(10)
-                .reader(organizationReader()).processor(new OrgProcessor(subscriptionTypeRepository)).faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).writer(orgWriter()).faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper()).build();
+                .reader(organizationReader())
+                .processor(new OrgProcessor(subscriptionTypeRepository))
+                .faultTolerant()
+                .skipPolicy(nullPointerExceptionProcessorSkipper())
+                .writer(orgWriter())
+                .faultTolerant()
+                .skipPolicy(dataIntegrityViolationExceptionSkipper())
+                .build();
     }
 
     @Bean
@@ -185,7 +201,14 @@ public class BatchConfig {
     @Qualifier(value = "projectStep")
     public Step projectStep() {
         return stepBuilderFactory.get("projectStep").<Project, com.seamfix.bio.entities.Project>chunk(10)
-                .reader(projectReader()).processor(new ProjectProcessor(organisationRepository)).faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).writer(projectWriter()).faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper()).build();
+                .reader(projectReader())
+                .processor(new ProjectProcessor(organisationRepository))
+                .faultTolerant()
+                .skipPolicy(nullPointerExceptionProcessorSkipper())
+                .writer(projectWriter())
+                .faultTolerant()
+                .skipPolicy(dataIntegrityViolationExceptionSkipper())
+                .build();
     }
 
     @Bean
@@ -290,7 +313,16 @@ public class BatchConfig {
     @Qualifier(value = "capturedDataStep")
     public Step capturedDataStep() {
         return stepBuilderFactory.get("capturedDataStep").<com.seamfix.bio.extended.mongodb.entities.CapturedData, CapturedData>chunk(5)
-                .reader(capturedDataReader()).processor(new CapturedDataProcessor(capturedDataRepository, capturedDataDemoGraphicsRepository)).faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper()).writer(new NoOpItemWriter()).build();
+                .reader(capturedDataReader())
+                .faultTolerant()
+                .skipPolicy(nullPointerExceptionProcessorSkipper())
+                .processor(new CapturedDataProcessor(capturedDataRepository, capturedDataDemoGraphicsRepository))
+                .faultTolerant()
+                .skipPolicy(nullPointerExceptionProcessorSkipper())
+                .writer(new NoOpItemWriter())
+                .faultTolerant()
+                .skipPolicy(dataIntegrityViolationExceptionSkipper())
+                .build();
     }
 
     @Bean
@@ -313,7 +345,16 @@ public class BatchConfig {
     @Qualifier(value = "deviceStep")
     public Step deviceStep() {
         return stepBuilderFactory.get("deviceStep").<com.sf.bioregistra.entity.Device, Device>chunk(2)
-                .reader(deviceReader()).processor(new DeviceProcessor(deviceRepository)).faultTolerant().skipPolicy(nullPointerExceptionProcessorSkipper()).faultTolerant().skipPolicy(dataIntegrityViolationExceptionSkipper()).writer(new NoOpItemWriter()).build();
+                .reader(deviceReader())
+                .faultTolerant()
+                .skipPolicy(nullPointerExceptionProcessorSkipper())
+                .processor(new DeviceProcessor(deviceRepository))
+                .faultTolerant()
+                .skipPolicy(nullPointerExceptionProcessorSkipper())
+                .writer(new NoOpItemWriter())
+                .faultTolerant()
+                .skipPolicy(dataIntegrityViolationExceptionSkipper())
+                .build();
     }
 
     @Bean
